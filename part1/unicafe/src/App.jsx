@@ -8,25 +8,23 @@ function App() {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const handleClickGood = () => {
-    setGood(prevState => prevState + 1)
-  }
-
-  const handleClickNeutral = () => {
-    setNeutral(prevState => prevState + 1)
-  }
-
-  const handleClickBad = () => {
-    setBad(prevState => prevState + 1)
+  const handleClick = (type) => {
+    if (type === 1) {
+      setGood(prevState => prevState + 1)
+    } else if (type === 0) {
+      setNeutral(prevState => prevState + 1)
+    } else {
+      setBad(prevState => prevState + 1)
+    }
   }
 
   return (
     <div className='p-4'>
       <Title title='Give Feedback' />
       <div className='flex gap-4 my-4'>
-        <Button text='Good' handleClick={handleClickGood} />
-        <Button text='Neutral' handleClick={handleClickNeutral} />
-        <Button text='Bad' handleClick={handleClickBad} />
+        <Button text='Good' handleClick={() => handleClick(1)} />
+        <Button text='Neutral' handleClick={() => handleClick(0)} />
+        <Button text='Bad' handleClick={() => handleClick(-1)} />
       </div>
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
