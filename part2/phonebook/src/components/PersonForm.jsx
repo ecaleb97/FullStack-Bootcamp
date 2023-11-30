@@ -1,6 +1,3 @@
-import { Button } from './Button'
-import { Input } from './Input'
-
 export function PersonForm ({
   nameValue,
   numberValue,
@@ -8,22 +5,35 @@ export function PersonForm ({
   handleNumberChange,
   handleSubmit
 }) {
+  
+  const inputStyle = 'px-2 py-[1px] border border-gray-400 rounded-md sm:w-[300px]'
+
   return (
     <form   
-      className='flex gap-2'
+      className='flex flex-col gap-2'
       onSubmit={handleSubmit}
     >
-      <Input 
+      <input 
+        type="text"
+        placeholder='name'
         value={nameValue}
-        onChange={handleNameChange}
-        placeholder={'name'}
+        onChange={handleNameChange} 
+        className={inputStyle}
+        required
       />
-      <Input 
+      <input type="text" 
+        placeholder='number'
         value={numberValue}
         onChange={handleNumberChange}
-        placeholder={'number'}
+        className={inputStyle}
+        required
       />
-      <Button text="Add Contact" />
+      <button
+        type='submit'
+        className="inline-block border border-green-500 text-green-500 rounded-md px-2 py-[1px] sm:w-[150px]"
+      >
+        Add Contact
+      </button>
     </form>
   )
 }
