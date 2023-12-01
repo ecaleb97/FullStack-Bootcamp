@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
@@ -30,6 +31,22 @@ let persons = [
   }
 ]
 
+
+
+/* function requestLogger(request, response, next) {
+  console.log('Method:', request.method)
+  console.log('Path:', request.path)
+  console.log('Body:', request.body)
+  console.log('---')
+  next()
+} */
+
+morgan.token('body', (request, response) => JSON.stringify(request.body))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+
+/* app.use(requestLogger)  */
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
@@ -44,6 +61,15 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
+})
+
+app.get('/info', (request, response) => {
+  const date = new Date()
+
+  response.send(`
+    <p>Phonebook has info for ${persons.length} people</p>
+    <p>${date.toISOString().split('T')[0]}</p>
+  `)
 })
 
 function generateId() {
@@ -64,6 +90,12 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
+  if(persons.find(p => p.name === person.name)) {
+    return response.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+
   const newPerson = {
     id: generateId(),
     name: person.name,
@@ -72,7 +104,7 @@ app.post('/api/persons', (request, response) => {
 
   persons = [...persons, newPerson]
 
-  console.log(persons)
+  /* console.log(persons) */
 
   response.json(newPerson)
 })
@@ -84,6 +116,12 @@ app.delete('/api/persons/:id', (request, response) => {
 
   response.status(204).end()
 })
+
+function unknownEndpoint(request, response) {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
